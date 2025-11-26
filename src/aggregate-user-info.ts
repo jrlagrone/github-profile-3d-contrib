@@ -59,12 +59,15 @@ export const aggregateUserInfo = (
             repo.repository.languages?.edges.forEach((langEdge) => {
                 total_bytes += langEdge.size;
             });
+            console.log(`total_bytes, ${total_bytes}!`);
             if (total_bytes > 0) {
                 repo.repository.languages?.edges.forEach((langEdge) => {
                     const language = langEdge.node.name;
                     const color = langEdge.node.color || OTHER_COLOR;
                     const size = langEdge.size; // Size can be used as a metric of contribution
-    
+                    console.log(`language, ${language}!`);
+                    console.log(`color, ${color}!`);
+                    console.log(`size, ${size}!`);
                     if (contributesLanguage[language]) {
                         contributesLanguage[language].contributions += size;
                     } else {
