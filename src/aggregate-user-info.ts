@@ -55,10 +55,30 @@ export const aggregateUserInfo = (
     response.data.user.contributionsCollection.commitContributionsByRepository
         .forEach((repo) => {
             // New: Handle all languages
+            let total_bytes: number = 0;
             repo.repository.languages?.edges.forEach((langEdge) => {
-                const language = langEdge.node.name;
-                const color = langEdge.node.color || OTHER_COLOR;
-                const size = langEdge.size; // Size can be used as a metric of contribution
+                total_bytes += langEdge.size;
+            });
+            if (total_bytes > 0) {
+                repo.repository.languages?.edges.forEach((langEdge) => {
+                    const language = langEdge.node.name;
+                    const color = langEdge.node.color || OTHER_COLOR;
+                    const size = langEdge.size; // Size can be used as a metric of contribution
+    
+                    if (contributesLanguage[language]) {
+                        contributesLanguage[language].contributions += size;
+                    } else {
+                        contributesLanguage[language] = {
+                            language: language,
+                            color: color,
+                            contributions: size / total_bytes,
+                        };
+                    }
+                });
+            } else {
+                const language = "Private Contributions";
+                const color = OTHER_COLOR;
+                const size = 1;
 
                 if (contributesLanguage[language]) {
                     contributesLanguage[language].contributions += size;
@@ -69,7 +89,7 @@ export const aggregateUserInfo = (
                         contributions: size,
                     };
                 }
-            });
+            }
         });
 
     // Sorting the languages based on contributions
