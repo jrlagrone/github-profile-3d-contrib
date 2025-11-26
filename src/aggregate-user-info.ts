@@ -54,25 +54,6 @@ export const aggregateUserInfo = (
 
     response.data.user.contributionsCollection.commitContributionsByRepository
         .forEach((repo) => {
-            // Handle primary language (existing logic)
-            const primaryLanguage = repo.repository.primaryLanguage;
-            if (primaryLanguage) {
-                const language = primaryLanguage.name;
-                const color = primaryLanguage.color || OTHER_COLOR;
-                const contributions = repo.contributions.totalCount;
-
-                const info = contributesLanguage[language];
-                if (info) {
-                    info.contributions += contributions;
-                } else {
-                    contributesLanguage[language] = {
-                        language: language,
-                        color: color,
-                        contributions: contributions,
-                    };
-                }
-            }
-
             // New: Handle all languages
             repo.repository.languages?.edges.forEach((langEdge) => {
                 const language = langEdge.node.name;
